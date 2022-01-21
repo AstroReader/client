@@ -6,7 +6,23 @@ const App = () => {
     username: "",
     password: "",
   };
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(initialFormData);
+  const handleOnChange: React.ChangeEventHandler = (e) => {
+    const regex = /[\\<>*=]/g;
+
+    const target = e.target as HTMLInputElement;
+    const text = target.value;
+
+    setFormData({
+      ...formData,
+      [target.name]: text.replaceAll(regex, ""),
+    });
+  };
+
+  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(formData);
+  };
   return (
     <div id="background" className="w-full min-h-screen bg-dark">
       <div className="pb-20">
@@ -16,18 +32,29 @@ const App = () => {
             stro Reader
           </h1>
         </div>
-        <form className="flex flex-col justify-center w-9/12 py-12 mx-auto px-9 lg:h-128 bg-black/50 lg:w-128 rounded-md">
+        <form
+          onSubmit={handleOnSubmit}
+          className="flex flex-col justify-center w-9/12 py-12 mx-auto px-9 lg:h-128 bg-black/50 lg:w-128 rounded-md"
+        >
           <div>
-            <label className="text-2xl text-white">
+            <label htmlFor="username" className="text-2xl text-white">
               Username
               <input
+                id="username"
+                name="username"
+                value={formData.username}
+                onChange={handleOnChange}
                 className="block w-full h-16 px-4 mt-4 mb-6 text-2xl rounded-lg outline-none lg:mb-12 bg-gray/50"
                 type="text"
               />
             </label>
-            <label className="text-2xl text-white">
+            <label htmlFor="password" className="text-2xl text-white">
               Password
               <input
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleOnChange}
                 className="block w-full h-16 px-4 mt-4 mb-12 text-2xl rounded-lg outline-none lg:mb-12 bg-gray/50"
                 type="password"
               />
