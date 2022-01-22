@@ -26,7 +26,7 @@ const App = () => {
   return (
     <div id="background" className="w-full min-h-screen bg-dark">
       <div className="pb-20">
-        <div className="py-20 text-center md:py-10 xl:py-20">
+        <div className="py-20 mr-2 text-center md:py-10 xl:py-20">
           <img className="inline w-24" src={logoSvg} alt="" />
           <h1 className="inline text-5xl text-white align-middle xl:text-7xl">
             stro Reader
@@ -42,6 +42,7 @@ const App = () => {
               <input
                 id="username"
                 name="username"
+                autoComplete="username"
                 value={formData.username}
                 onChange={handleOnChange}
                 className="block w-full h-16 px-4 mt-4 mb-6 text-2xl rounded-lg outline-none lg:mb-12 bg-gray/50"
@@ -51,6 +52,7 @@ const App = () => {
             <label htmlFor="password" className="text-2xl text-white">
               Password
               <input
+                autoComplete="current-password"
                 id="password"
                 name="password"
                 value={formData.password}
