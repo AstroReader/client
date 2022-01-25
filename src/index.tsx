@@ -8,11 +8,18 @@ import App from "App";
 import "index.css";
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider as ReduxProvider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import store from "redux/store";
 import reportWebVitals from "reportWebVitals";
 
+export const SERVER_URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_SERVER_URL
+    : process.env.PUBLIC_URL;
+
 const link = createHttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri: `${SERVER_URL}/graphql`,
   credentials: "include",
 });
 
@@ -24,9 +31,11 @@ const client = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <ReduxProvider store={store}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ReduxProvider>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")
