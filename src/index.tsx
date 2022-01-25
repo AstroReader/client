@@ -1,18 +1,33 @@
+import {
+  ApolloClient,
+  ApolloProvider,
+  createHttpLink,
+  InMemoryCache,
+} from "@apollo/client";
+import App from "App";
+import "index.css";
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
+import reportWebVitals from "reportWebVitals";
+
+const link = createHttpLink({
+  uri: "http://localhost:4000/graphql",
+  credentials: "include",
+});
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link,
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />}>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
