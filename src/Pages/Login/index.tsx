@@ -1,18 +1,26 @@
 import { gql, useMutation } from "@apollo/client";
 import logoSvg from "assets/icons/logo.svg";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { selectUser, setUser } from "redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "redux/hooks";
+import { SERVER_URL } from "index";
 
 const LOGIN_USER = gql`
   mutation LoginUser($username: String!, $password: String!) {
     loginUser(username: $username, password: $password) {
+      id
+      username
       token
     }
   }
 `;
 
 const LoginPage = () => {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
   const navigate = useNavigate();
+
   const initialFormData = {
     username: "",
     password: "",
@@ -38,8 +46,15 @@ const LoginPage = () => {
     loginUser({
       variables: formData,
       onCompleted: async (data) => {
-        if (data?.loginUser?.token != undefined) {
-          await fetch("http://localhost:4000/cookie", {
+        // Sets user in Redux auth state
+        if (data?.loginUser) {
+          const user = data.loginUser;
+          dispatch(setUser({ id: user.id, username: user.username }));
+        }
+
+        // Creates httponly cookie
+        if (data?.loginUser?.token !== undefined) {
+          await fetch(`${SERVER_URL}/cookie`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -53,13 +68,16 @@ const LoginPage = () => {
     });
   };
 
-  if (loading) {
-    // return <div>Loading...</div>;
-  }
+  if (loading)
+    return <div className="w-screen h-screen bg-dark">Loading...</div>;
 
   if (error) {
     console.log(error);
     return <div>{`There is an error: ${error}`}</div>;
+  }
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return (

@@ -1,25 +1,27 @@
-import { useNavigate } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
-const GET_USER = gql`
-  query Query {
-    user {
-      username
-    }
-  }
-`;
+import { SERVER_URL } from "index";
+import { logout } from "redux/features/auth/authSlice";
+import { useAppDispatch } from "redux/hooks";
+
 const DashboardPage = () => {
-  const { loading, error, data } = useQuery(GET_USER);
-  const navigate = useNavigate();
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{`Error: ${error.message}`}</div>;
-  if (!data?.user?.username) {
-    // navigate("/");
-    return <div>You are not logged in</div>;
-  }
+  const dispatch = useAppDispatch();
+
+  const handleOnClick = async () => {
+    await fetch(`${SERVER_URL}/cookie`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    dispatch(logout());
+  };
 
   return (
-    <div>
-      <button>logout</button>
+    <div className="w-screen h-screen bg-dark ">
+      <button
+        className="px-12 py-4 font-bold text-white bg-gradient-to-r from-btnGradient1 via-btnGradient2/80 to-btnGradient3"
+        onClick={handleOnClick}
+      >
+        logout
+      </button>
     </div>
   );
 };
